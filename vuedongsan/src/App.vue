@@ -26,9 +26,9 @@
 
 
   <div v-for="(product, idx) in products" :key="idx">
-    <img :src="product.imgUrl" alt="방사진" class="room-img"/>
-    <h4 v-on:click="isModalOpen = true">{{product.name}}</h4>
-    <p>{{price1}} 만원</p>
+    <img :src="product.image" alt="방사진" class="room-img"/>
+    <h4 v-on:click="isModalOpen = true">{{product.title}}</h4>
+    <p>{{product.price}} 만원</p>
     <button v-on:click="clickHandler(idx)">신고하기</button> <span>신고수 : {{report[idx]}}</span>
   </div>
 
@@ -37,7 +37,8 @@
 
 <script>
 
-
+import dataList from "./data"
+console.log(dataList)
 
 export default {
   name: 'App',
@@ -46,7 +47,7 @@ export default {
       isModalOpen : false,
       price1 : 60,
       price2 : 50,
-      products : [{name : "역삼동 원룸", imgUrl : require('./assets/room0.jpg')}, {name : "천호동 원룸", imgUrl : require('./assets/room1.jpg')}, {name : "삼전동 원룸", imgUrl : require('./assets/room2.jpg')}],
+      products : dataList,
       menu : ["Home", "Shop", "About"],
       report : [0,1,2]
     }
