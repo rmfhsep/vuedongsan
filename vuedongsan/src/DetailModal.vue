@@ -32,10 +32,6 @@ export default {
         alert("숫자만 입력 가능합니다.");
         this.month = 1;
       }
-      // if (a < 1) {
-      //   alert("최소 1개월 이상 입력해야합니다.");
-      //   this.month = 1;
-      // }
       if (a > 12) {
         alert("할부 개월 수는 최대 12개월입니다.");
         this.month = 1;
