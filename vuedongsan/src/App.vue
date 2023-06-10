@@ -1,65 +1,101 @@
 <template>
+  <div>
+    <Transition name="fade">
+      <DetailModal
+        :isModalOpen="isModalOpen"
+        :detailNumber="detailNumber"
+        :products="products"
+        @modalHandler="modalHandler"
+      />
+    </Transition>
 
-<div>
+    <!-- 헤더 -->
+    <div class="menu">
+      <a v-for="(menuName, idx) in menu" :key="idx">{{ menuName }}</a>
+    </div>
 
-  <div v-if="isModalOpen" class="black-bg">
-    <div class="white-bg">
-      <div class="button-wrapper" v-on:click="isModalOpen=false">
-        <div>
-          X
-        </div>
-      </div>
-      <h4>상세페이지</h4>
-      <p>상세페이지 내용</p>
+    <!-- 할인배너 -->
+    <DiscountComp v-if="showDiscount" :discountRate="discountRate" />
+
+    <button @click="priceSort">가격순 정렬</button>
+    <button @click="sortBack">기본 정렬</button>
+
+    <!-- 상품 목록 -->
+    <div v-for="(product, idx) in products" :key="idx">
+      <ProductCard
+        @modalOpenHandler="modalOpenHandler"
+        :product="product"
+        :idx="idx"
+      />
     </div>
   </div>
-
-  <div class="menu">
-    <a v-for="(menuName, idx) in menu" :key="idx">{{menuName}}</a>
-    
-  </div>
-
-  <div style="font-size:2rem; font-weight:800">
-    VUEDONGSAN
-  </div>
-
-
-
-  <div v-for="(product, idx) in products" :key="idx">
-    <img :src="product.imgUrl" alt="방사진" class="room-img"/>
-    <h4 v-on:click="isModalOpen = true">{{product.name}}</h4>
-    <p>{{price1}} 만원</p>
-    <button v-on:click="clickHandler(idx)">신고하기</button> <span>신고수 : {{report[idx]}}</span>
-  </div>
-
-</div>
 </template>
 
 <script>
+import dataList from "./data";
+import DiscountComp from "./DiscountComp.vue";
+import DetailModal from "./DetailModal.vue";
+import ProductCard from "./ProductCard.vue";
 
-
+console.log(dataList);
 
 export default {
-  name: 'App',
+  name: "App",
   data() {
     return {
-      isModalOpen : false,
-      price1 : 60,
-      price2 : 50,
-      products : [{name : "역삼동 원룸", imgUrl : require('./assets/room0.jpg')}, {name : "천호동 원룸", imgUrl : require('./assets/room1.jpg')}, {name : "삼전동 원룸", imgUrl : require('./assets/room2.jpg')}],
-      menu : ["Home", "Shop", "About"],
-      report : [0,1,2]
-    }
+      discountRate: 30,
+      showDiscount: true,
+      isModalOpen: false,
+      detailNumber: null,
+      price1: 60,
+      price2: 50,
+      products: dataList,
+      newProducts: [...dataList],
+      menu: ["Home", "Shop", "About"],
+      report: [0, 1, 2],
+    };
   },
-  methods : {
+  watch: {
+    discountRate() {
+      if (this.discountRate === 0) {
+        this.showDiscount = false;
+      }
+    },
+  },
+  methods: {
     clickHandler(idx) {
-      this.report[idx]++
-    }
+      this.report[idx]++;
+    },
+    modalHandler() {
+      this.isModalOpen = !this.isModalOpen;
+    },
+    modalOpenHandler(idx) {
+      this.isModalOpen = true;
+      this.detailNumber = idx;
+    },
+    priceSort() {
+      this.products.sort(function (a, b) {
+        return a.price - b.price;
+      });
+    },
+    sortBack() {
+      this.products = [...this.newProducts];
+    },
   },
   components: {
-    
-  }
-}
+    DiscountComp,
+    DetailModal,
+    ProductCard,
+  },
+  mounted() {
+    setInterval(() => {
+      this.discountRate--;
+      // if (this.discountRate === 0) {
+      //   this.showDiscount = false;
+      // }
+    }, 1000);
+  },
+};
 </script>
 
 <style>
@@ -72,43 +108,50 @@ export default {
   /* margin : 0 auto; */
 }
 
+.fade-enter-from {
+  opacity: 0;
+}
+.fade-enter-active {
+  transition: all 1s;
+}
+.fade-enter-to {
+  opacity: 1;
+}
+
+.fade-leave-from {
+  opacity: 1;
+}
+.fade-leave-active {
+  transition: all 1s;
+}
+.fade-leave-to {
+  opacity: 0;
+}
+
 body {
-  margin : 0
+  margin: 0;
 }
 div {
   box-sizing: border-box;
-} 
+}
 .menu {
-  background:  darkslateblue;
-  padding : 15px;
+  background: darkslateblue;
+  padding: 15px;
   /* border-radius: 5p */
 }
 .menu a {
-  color : white;
-  padding : 10px
+  color: white;
+  padding: 10px;
 }
 .room-img {
-  width : 100%;
-  margin-top : 40px;
-}
-.black-bg {
   width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  position: fixed;
-  padding : 20px;
+  margin-top: 40px;
 }
-.white-bg {
-  width: 100%;
-  background: white;
-  border-radius: 8px;
-  padding : 20px;
+.start {
+  opacity: 0;
+  transition: all 0.7s;
 }
-.button-wrapper {
-  widows: 100%;
-  display: flex;
-  justify-content: end;
-  font-weight: 900;
-  cursor: pointer;
+.end {
+  opacity: 1;
 }
 </style>
