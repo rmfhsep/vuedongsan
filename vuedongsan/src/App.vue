@@ -1,66 +1,69 @@
 <template>
+  <div>
+    <DetailModal
+      :isModalOpen="isModalOpen"
+      :detailNumber="detailNumber"
+      :products="products"
+      @modalHandler="modalHandler"
+    />
 
-<div>
+    <!-- 헤더 -->
+    <div class="menu">
+      <a v-for="(menuName, idx) in menu" :key="idx">{{ menuName }}</a>
+    </div>
 
-  <div v-if="isModalOpen" class="black-bg">
-    <div class="white-bg">
-      <div class="button-wrapper" v-on:click="isModalOpen=false">
-        <div>
-          X
-        </div>
-      </div>
-      <h4>상세페이지</h4>
-      <p>상세페이지 내용</p>
+    <DiscountComp :product="product" :idx="idx" />
+
+    <!-- 상품 목록 -->
+    <div v-for="(product, idx) in products" :key="idx">
+      <ProductCard
+        @modalOpenHandler="modalOpenHandler"
+        :product="product"
+        :idx="idx"
+      />
     </div>
   </div>
-
-  <div class="menu">
-    <a v-for="(menuName, idx) in menu" :key="idx">{{menuName}}</a>
-    
-  </div>
-
-  <div style="font-size:2rem; font-weight:800">
-    VUEDONGSAN
-  </div>
-
-
-
-  <div v-for="(product, idx) in products" :key="idx">
-    <img :src="product.image" alt="방사진" class="room-img"/>
-    <h4 v-on:click="isModalOpen = true">{{product.title}}</h4>
-    <p>{{product.price}} 만원</p>
-    <button v-on:click="clickHandler(idx)">신고하기</button> <span>신고수 : {{report[idx]}}</span>
-  </div>
-
-</div>
 </template>
 
 <script>
+import dataList from "./data";
+import DiscountComp from "./DiscountComp.vue";
+import DetailModal from "./DetailModal.vue";
+import ProductCard from "./ProductCard.vue";
 
-import dataList from "./data"
-console.log(dataList)
+console.log(dataList);
 
 export default {
-  name: 'App',
+  name: "App",
   data() {
     return {
-      isModalOpen : false,
-      price1 : 60,
-      price2 : 50,
-      products : dataList,
-      menu : ["Home", "Shop", "About"],
-      report : [0,1,2]
-    }
+      isModalOpen: false,
+      detailNumber: null,
+      price1: 60,
+      price2: 50,
+      products: dataList,
+      menu: ["Home", "Shop", "About"],
+      report: [0, 1, 2],
+    };
   },
-  methods : {
+  methods: {
     clickHandler(idx) {
-      this.report[idx]++
-    }
+      this.report[idx]++;
+    },
+    modalHandler() {
+      this.isModalOpen = !this.isModalOpen;
+    },
+    modalOpenHandler(idx) {
+      this.isModalOpen = true;
+      this.detailNumber = idx;
+    },
   },
   components: {
-    
-  }
-}
+    DiscountComp,
+    DetailModal,
+    ProductCard,
+  },
+};
 </script>
 
 <style>
@@ -74,36 +77,40 @@ export default {
 }
 
 body {
-  margin : 0
+  margin: 0;
 }
 div {
   box-sizing: border-box;
-} 
+}
 .menu {
-  background:  darkslateblue;
-  padding : 15px;
+  background: darkslateblue;
+  padding: 15px;
   /* border-radius: 5p */
 }
 .menu a {
-  color : white;
-  padding : 10px
+  color: white;
+  padding: 10px;
 }
 .room-img {
-  width : 100%;
-  margin-top : 40px;
+  width: 100%;
+  margin-top: 40px;
 }
-.black-bg {
+/* .black-bg {
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   position: fixed;
-  padding : 20px;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
 }
 .white-bg {
-  width: 100%;
+  width: 90%;
+  max-height: 50%;
   background: white;
   border-radius: 8px;
-  padding : 20px;
+  padding: 20px;
+  overflow: scroll;
 }
 .button-wrapper {
   widows: 100%;
@@ -111,5 +118,5 @@ div {
   justify-content: end;
   font-weight: 900;
   cursor: pointer;
-}
+} */
 </style>
